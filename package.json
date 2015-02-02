@@ -2,6 +2,16 @@
   "name": "wakatime-thunderbird",
   "version": "0.5.0",
   "description": "Wakatime for Thunderbird",
+  "homepage": "https://monkeysintown.github.io/thunderbird-wakatime",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/monkeysintown/thunderbird-wakatime"
+  },
+  "author": {
+    "name": "Monkeys in Town Lda.",
+    "email": "office.lisbon@monkeysintown.com",
+    "url": "https://monkeysintown.github.io"
+  },
   "dependencies": {},
   "devDependencies": {
     "del": "^1.1.1",
@@ -10,7 +20,7 @@
     "gulp-filter": "^2.0.0",
     "gulp-flatten": "^0.0.4",
     "gulp-if": "^1.2.5",
-    "gulp-jshint": "^1.9.0",
+    "gulp-jshint": "^1.9.1",
     "gulp-load-plugins": "^0.8.0",
     "gulp-replace": "^0.5.2",
     "gulp-size": "^1.2.0",
