@@ -12,6 +12,13 @@
     "email": "office.lisbon@monkeysintown.com",
     "url": "https://monkeysintown.github.io"
   },
+  "files": [
+    "addon"
+  ],
+  "bugs": {
+    "url": "https://github.com/monkeysintown/thunderbird-wakatime/issues"
+  },
+  "readme": "README.md",
   "dependencies": {},
   "devDependencies": {
     "del": "^1.1.1",
