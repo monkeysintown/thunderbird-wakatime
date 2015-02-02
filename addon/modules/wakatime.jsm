@@ -20,8 +20,6 @@ let WakaTime = {
         this.lastAction = Date.now();
 
         Services.wm.addListener(this.windowListener);
-
-        Log.info('Wakatime: ready - ' + data.id + ' - ' + WakaTime.version);
     },
     destroy: function() {
         Services.wm.removeListener(this.windowListener);
@@ -72,7 +70,6 @@ let WakaTime = {
         onWindowTitleChange: function (w, title) {
             // TODO: get document stats; improve this
             WakaTime.sendHeartbeat(title + '.eml', Date.now(), 'thunderbird-test', 'Email', true, 4);
-
             Log.info('window: ' + w + ' - title: ' + title);
         }
     }

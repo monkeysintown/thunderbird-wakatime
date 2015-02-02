@@ -39,7 +39,5 @@ function shutdown(data, reason) {
     WakaTime.destroy();
 
     Components.manager.removeBootstrappedManifestLocation(data.installPath);
-
-    Log.info('Wakatime: Bye, bye World!');
     //Services.prompt.alert(null, 'Wakatime', 'Bye, bye World!');
 }

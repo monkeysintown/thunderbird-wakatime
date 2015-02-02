@@ -50,7 +50,6 @@ let Prefs = {
 
         if(!Prefs.hasPref('config_file')) {
             Prefs.setPref('config_file', OS.Constants.Path.homeDir + '/.wakatime.cfg');
-            Log.info('Config file: ' + Prefs.getPref("config_file"));
         }
 
         if(!Prefs.hasPref('api_key')) {
@@ -59,7 +58,6 @@ let Prefs = {
                 for (var property in config) {
                     if (config.hasOwnProperty(property)) {
                         Prefs.setPref(property, config[property]);
-                        Log.info('Config property: ' + property + ' = ' + config[property]);
                     }
                 }
             });
