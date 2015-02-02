@@ -99,7 +99,7 @@ let Prefs = {
 
 let Http = {
     post: function(url, options, data) {
-        // TODO: implement this
+        // TODO: implement this (with promises?)
         let request = Cc['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance(Ci.nsIXMLHttpRequest);
         request.overrideMimeType(options.mimeType);
         request.open('POST', url, true);
