@@ -1,0 +1,4 @@
+<!ENTITY apiKey.label                 "WakaTime API Key">
+<!ENTITY apiKey.description           "If no value is provided the extensions will load the key from ~/.wakatime.cfg">
+<!ENTITY configFile.label             "WakaTime configuration file">
+<!ENTITY configFile.description       "Usually ~/.wakatime.cfg">

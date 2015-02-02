@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!DOCTYPE vbox SYSTEM "chrome://wakatime/locale/settings.dtd">
+
+<vbox xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+    <setting pref="extensions.wakatime.api_key" type="string" title="&apiKey.label;">&apiKey.description;</setting>
+    <setting pref="extensions.wakatime.config_file" type="string" title="&configFile.label;">&configFile.description;</setting>
+</vbox>
