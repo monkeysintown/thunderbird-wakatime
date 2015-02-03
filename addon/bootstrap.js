@@ -25,10 +25,12 @@ function startup(data, reason) {
 
     // module imports
     Cu.import("resource://wakatime/modules/util.jsm");
+    Cu.import("resource://wakatime/modules/ui.jsm");
     Cu.import("resource://wakatime/modules/wakatime.jsm");
 
     File.init();
     Prefs.init();
+    Ui.init();
     WakaTime.init(data);
 
     //var eventListenerService = Cc["@mozilla.org/eventlistenerservice;1"].getService(Ci.nsIEventListenerService);

@@ -4,4 +4,8 @@
 <vbox xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
     <setting pref="extensions.wakatime.api_key" type="string" title="&apiKey.label;">&apiKey.description;</setting>
     <setting pref="extensions.wakatime.config_file" type="string" title="&configFile.label;">&configFile.description;</setting>
+    <setting pref="extensions.wakatime.project" type="string" title="&project.label;">&project.description;</setting>
+    <setting pref="extensions.wakatime.shortcut_modifiers" type="string" title="&shortcutModifiers.label;">&shortcutModifiers.description;</setting>
+    <setting pref="extensions.wakatime.shortcut_key" type="string" title="&shortcutKey.label;">&shortcutKey.description;</setting>
+    <setting pref="extensions.wakatime.debug" type="boolean" title="&debug.label;">&debug.description;</setting>
 </vbox>

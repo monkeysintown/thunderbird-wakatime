@@ -1,6 +1,6 @@
-/* global Components, Services */
+/* global Components, Services, PREF_STRING, PREF_INT, PREF_BOOL, PREF_INVALID */
 
-EXPORTED_SYMBOLS = ['Log', 'Prefs', 'File', 'Exec', 'Http'];
+EXPORTED_SYMBOLS = ['Log', 'Prefs', 'File', 'Exec', 'Http', '$'];
 
 const {interfaces: Ci, utils: Cu, classes: Cc} = Components;
 
@@ -62,6 +62,13 @@ let Prefs = {
                 }
             });
         }
+
+        if(!Prefs.hasPref('shortcut_key')) {
+            Prefs.setPref('shortcut_key', 'w');
+        }
+        if(!Prefs.hasPref('shortcut_modifiers')) {
+            Prefs.setPref('shortcut_modifiers', 'shift,alt');
+        }
     },
     hasPref: function(key) {
         if(Prefs.prefs.getPrefType(key)) {
@@ -71,10 +78,33 @@ let Prefs = {
         }
     },
     getPref: function(key) {
-        return this.prefs.getCharPref(key);
+        var type = Prefs.prefs.getPrefType(key);
+
+        switch(type) {
+            case Ci.nsIPrefBranch.PREF_STRING:
+                return this.prefs.getCharPref(key);
+            case Ci.nsIPrefBranch.PREF_INT:
+                return this.prefs.getIntPref(key);
+            case Ci.nsIPrefBranch.PREF_BOOL:
+                return this.prefs.getBoolPref(key);
+            default :
+                return null;
+        }
     },
     setPref: function(key, value) {
-        return this.prefs.setCharPref(key, value);
+        var type = Prefs.prefs.getPrefType(key);
+
+        switch(type) {
+            case Ci.nsIPrefBranch.PREF_STRING:
+                this.prefs.setCharPref(key, value);
+                break;
+            case Ci.nsIPrefBranch.PREF_INT:
+                this.prefs.setIntPref(key, value);
+                break;
+            case Ci.nsIPrefBranch.PREF_BOOL:
+                this.prefs.setBoolPref(key, value);
+                break;
+        }
     },
     map: function(text) {
         var lines = text.replace(/\r/g, '').split('\n');
@@ -98,16 +128,36 @@ let Prefs = {
 };
 
 let Http = {
-    post: function(url, options, data) {
-        // TODO: implement this (with promises?)
-        let request = Cc['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance(Ci.nsIXMLHttpRequest);
-        request.overrideMimeType(options.mimeType);
-        request.open('POST', url, true);
-        for(var i=0; i<options.length; i++) {
-            //request.setRequestHeader('Content-Type', options.contentType);
+    send: function(url, options) {
+        if(!options) {
+            options = {};
         }
-        request.onload = options.onload;
-        request.onerror = options.onerror;
-        request.send(data);
+        let request = Cc['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance(Ci.nsIXMLHttpRequest);
+        if(options.mimeType) {
+            request.overrideMimeType(options.mimeType);
+        }
+        request.open(options.method ? options.method : 'GET', url, true);
+        if(options.headers) {
+            for(var property in options.headers) {
+                if (options.headers.hasOwnProperty(property)) {
+                    request.setRequestHeader(property, options.headers[property]);
+                }
+            }
+        }
+        if(options.onload) {
+            request.onload = options.onload;
+        }
+        if(options.onerror) {
+            request.onerror = options.onerror;
+        }
+        request.send(options.data);
     }
 };
+
+function $(node, childId) {
+    if (node.getElementById) {
+        return node.getElementById(childId);
+    } else {
+        return node.querySelector("#" + childId);
+    }
+}

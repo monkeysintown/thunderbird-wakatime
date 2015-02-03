@@ -17,7 +17,6 @@ let WakaTime = {
         Cu.import('resource://wakatime/modules/util.jsm');
 
         this.version = data.version;
-        this.lastAction = Date.now();
 
         Services.wm.addListener(this.windowListener);
     },
@@ -26,32 +25,45 @@ let WakaTime = {
         Log.info('Wakatime: destroyed');
     },
     sendHeartbeat: function(file, time, project, language, isWrite, lines) {
-        let request = Cc['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance(Ci.nsIXMLHttpRequest);
-        request.overrideMimeType('application/json');
-        request.open('POST', API_URL, true);
-        request.setRequestHeader('Content-Type', 'application/json');
-        request.setRequestHeader('Authorization', 'Basic ' + btoa(Prefs.getPref('api_key')));
-        request.onload = function(e) {
-            Log.info("Response Text: " + e.target.responseText);
-        };
-        request.onerror = function(aEvent) {
-            Log.info("Error Status: " + aEvent.target.status);
-        };
-        request.send(JSON.stringify({
-            time: time/1000,
-            file: file,
-            project: project,
-            language: language,
-            is_write: isWrite ? true : false,
-            lines: lines,
-            plugin: 'thunderbird-wakatime/' + WakaTime.version
-        }));
+        if(this.enoughTimePassed()) {
+            Http.send(API_URL, {
+                method: 'POST',
+                mimeType: 'application/json',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Basic ' + btoa(Prefs.getPref('api_key'))
+                },
+                onload: function(e) {
+                    Log.info("Response Text: " + e.target.responseText);
+                },
+                onerror: function(e) {
+                    Log.info("Error Status: " + e.target.status);
+                },
+                data: JSON.stringify({
+                    time: time/1000,
+                    file: file,
+                    project: project,
+                    language: language,
+                    is_write: isWrite ? true : false,
+                    lines: lines,
+                    plugin: 'thunderbird-wakatime/' + WakaTime.version
+                })
+            });
+
+            this.lastAction = Date.now();
+        }
     },
     enoughTimePassed: function() {
-        return this.lastAction + 120000 < Date.now();
+        if(!this.lastAction) {
+            this.lastAction = Date.now();
+            return true;
+        } else {
+            return this.lastAction + 120000 < Date.now();
+        }
     },
     promptForApiKey: function() {
         // TODO: implement this
+        //win.openDialog("chrome://enigmail/content/project.xul", "", "dialog,modal,centerscreen", inputObj, resultObj);
     },
     windowListener: {
         onOpenWindow: function (w) {
@@ -68,8 +80,9 @@ let WakaTime = {
             Log.info('window: ' + w + ' - closed');
         },
         onWindowTitleChange: function (w, title) {
-            // TODO: get document stats; improve this
-            WakaTime.sendHeartbeat(title + '.eml', Date.now(), 'thunderbird-test', 'Email', true, 4);
+            var project = Prefs.getPref('project');
+            project = project ? project : 'thunderbird-test';
+            WakaTime.sendHeartbeat(title + '.eml', Date.now(), project, 'Email', true, 4);
             Log.info('window: ' + w + ' - title: ' + title);
         }
     }
