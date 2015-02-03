@@ -25,5 +25,3 @@ https://github.com/monkeysintown/thunderbird-wakatime/blob/develop/addon/modules
 - listen to open/save/close/key input on message windows
 - check time between heartbeats
 - maybe use the CLI to send the heartbeat (benefit: inherit offline capabilities of WakaTime)
-
-
