@@ -63,7 +63,6 @@ let WakaTime = {
     },
     promptForApiKey: function() {
         // TODO: implement this
-        //win.openDialog("chrome://enigmail/content/project.xul", "", "dialog,modal,centerscreen", inputObj, resultObj);
     },
     windowListener: {
         onOpenWindow: function (w) {

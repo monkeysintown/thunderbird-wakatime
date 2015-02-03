@@ -1,10 +1,12 @@
 /* global Components, Services, $ */
 
-EXPORTED_SYMBOLS = ['Ui'];
+EXPORTED_SYMBOLS = ['Ui', 'Headup'];
 
 const {interfaces: Ci, utils: Cu, classes: Cc} = Components;
 
 const NS_XUL = 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul';
+
+const APPSHELL_MEDIATOR_CONTRACTID = '@mozilla.org/appshell/window-mediator;1';
 
 const KEYSET_ID = 'wakatime-keyset';
 const KEY_ID = 'wakatime-key';
@@ -21,6 +23,14 @@ let Menu = {
 let Toolbar = {
     load: function(win) {
         // TODO: ideally no additional toolbar buttons
+    }
+};
+
+let Headup = {
+    show: function(name, timeout) {
+        // NOTE: this functions blocks until dialog is closed (modal)
+        //Ui.win().openDialog('chrome://wakatime/content/' + name + '.xul', '', 'chrome,centerscreen', timeout);
+        Ui.win().openDialog('chrome://wakatime/content/' + name + '.xul', '', 'dialog,centerscreen', timeout);
     }
 };
 
@@ -41,6 +51,7 @@ let Shortcut = {
         key.addEventListener('command', function() {
             // TODO: implement this
             Log.info('Shortcut called');
+            Headup.show('project', 1000);
         }, true);
 
         $(doc, Ui.app.baseKeyset).parentNode.appendChild(keyset).appendChild(key)
@@ -93,5 +104,13 @@ let Ui = {
             //this.runOnLoad(subject, this.loadIntoWindow);
             callback(subject);
         }
+    },
+    win: function() {
+        var wm = Cc[APPSHELL_MEDIATOR_CONTRACTID].getService(Ci.nsIWindowMediator);
+        return wm.getMostRecentWindow(null);
+    },
+    setTimeout: function(callback, timeout) {
+        var timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+        timer.initWithCallback(callback, timeout, Ci.nsITimer.TYPE_ONE_SHOT);
     }
 };
