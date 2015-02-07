@@ -10,7 +10,7 @@ var merge = require('merge-stream');
 var pkg = require('./package.json');
 var request = require('request');
 
-gulp.task('package', function () {
+gulp.task('build', ['clean'], function () {
     return gulp.src('addon/**/*')
         .pipe($.zip(pkg.name + '.xpi'))
         .pipe(gulp.dest('dist'));
@@ -24,4 +24,4 @@ gulp.task('clean', function () {
         .pipe(vinylPaths(del));
 });
 
-gulp.task('default', ['package']);
+gulp.task('default', ['build']);

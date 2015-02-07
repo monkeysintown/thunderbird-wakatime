@@ -8,7 +8,7 @@
 
 npm install
 
-gulp clean package
+gulp build
 
 # Note
 
