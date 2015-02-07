@@ -7,6 +7,8 @@ const {interfaces: Ci, utils: Cu, classes: Cc} = Components;
 // global imports
 Cu.import('resource://gre/modules/Services.jsm');
 
+Services.obs.notifyObservers(null, "chrome-flush-caches", null);
+
 function install(data, reason) {
 
 }
@@ -39,6 +41,7 @@ function startup(data, reason) {
 
 function shutdown(data, reason) {
     WakaTime.destroy();
+    Ui.destroy();
 
     Components.manager.removeBootstrappedManifestLocation(data.installPath);
     //Services.prompt.alert(null, 'Wakatime', 'Bye, bye World!');

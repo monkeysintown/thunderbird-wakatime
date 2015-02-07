@@ -14,6 +14,33 @@ const KEY_ID = 'wakatime-key';
 // global imports
 Cu.import('resource://gre/modules/Services.jsm');
 
+let Css = {
+    stylesheets: [
+        'chrome://wakatime/skin/overlay.css'
+    ],
+    init: function() {
+        let styleSheetService = Cc["@mozilla.org/content/style-sheet-service;1"].getService(Ci.nsIStyleSheetService);
+
+        for( let i=0; i<Css.stylesheets.length; i++ ) {
+            let styleSheetURI = Services.io.newURI(Css.stylesheets[i], null, null);
+
+            styleSheetService.loadAndRegisterSheet(styleSheetURI, styleSheetService.AUTHOR_SHEET);
+            Log.info(styleSheetURI);
+        }
+    },
+    destroy: function() {
+        let styleSheetService = Cc["@mozilla.org/content/style-sheet-service;1"].getService(Ci.nsIStyleSheetService);
+
+        for( let i=0; i<Css.stylesheets.length; i++ ) {
+            let styleSheetURI = Services.io.newURI(Css.stylesheets[i], null, null);
+
+            if (styleSheetService.sheetRegistered(styleSheetURI, styleSheetService.AUTHOR_SHEET)) {
+                styleSheetService.unregisterSheet(styleSheetURI, styleSheetService.AUTHOR_SHEET);
+            }
+        }
+    }
+};
+
 let Menu = {
     load: function(win) {
         // TODO: ideally no additional menus
@@ -23,6 +50,42 @@ let Menu = {
 let Toolbar = {
     load: function(win) {
         // TODO: ideally no additional toolbar buttons
+    }
+};
+
+let Statusbar = {
+    init: function() {
+        function Observer() {
+            this.register();
+        }
+
+        Observer.prototype = {
+            observe: function(subject, topic, data) {
+                Log.info('s: ' + subject + ' t: ' + topic + ' d: ' + data);
+            },
+            register: function() {
+                var observerService = Cc['@mozilla.org/observer-service;1'].getService(Ci.nsIObserverService);
+                observerService.addObserver(this, '*', false); // NOTE: just for debugging, very verbose
+                //observerService.addObserver(this, 'wt-event', false);
+            },
+            unregister: function() {
+                var observerService = Cc['@mozilla.org/observer-service;1'].getService(Ci.nsIObserverService);
+                observerService.removeObserver(this, '*');
+                //observerService.removeObserver(this, 'wt-event');
+            }
+        };
+
+        this.observer = new Observer();
+    },
+    destroy: function() {
+        // TODO: anything to be done here?
+    },
+    load: function(win) {
+        if (!win) return;
+
+        let doc = win.document;
+
+        doc.loadOverlay('chrome://wakatime/content/statusbar.xul', this.observer);
     }
 };
 
@@ -79,8 +142,19 @@ let Ui = {
                 this.app.baseKeyset = 'mainKeyset';
         }
 
-        // TODO: load into windows
-        this.eachWindow(Shortcut.load);
+        // init
+        //Css.init();
+        Statusbar.init();
+
+        // load into windows
+        this.eachWindow(function(win) {
+            Shortcut.load(win);
+            Statusbar.load(win);
+        });
+    },
+    destroy: function() {
+        Statusbar.destroy();
+        //Css.destroy();
     },
     eachWindow: function (callback) {
         let enumerator = Services.wm.getEnumerator(this.app.winType);
@@ -110,7 +184,7 @@ let Ui = {
         return wm.getMostRecentWindow(null);
     },
     setTimeout: function(callback, timeout) {
-        var timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+        var timer = Cc['@mozilla.org/timer;1'].createInstance(Ci.nsITimer);
         timer.initWithCallback(callback, timeout, Ci.nsITimer.TYPE_ONE_SHOT);
     }
 };

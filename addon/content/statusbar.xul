@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://wakatime/skin/overlay.css" type="text/css"?>
+<overlay id="wt" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+    <statusbar id="status-bar">
+        <!--
+        <statusbarpanel id="wt-statusbar-panel-icon">
+            <icon id="wt-statusbar-icon" />
+        </statusbarpanel>
+        -->
+        <statusbarpanel id="wt-statusbar-panel-label" label="Wakatime!" tooltiptext="Here comes Wakatime..."/>
+    </statusbar>
+</overlay>
