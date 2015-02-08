@@ -6,8 +6,6 @@ const {interfaces: Ci, utils: Cu, classes: Cc} = Components;
 
 const NS_XUL = 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul';
 
-const APPSHELL_MEDIATOR_CONTRACTID = '@mozilla.org/appshell/window-mediator;1';
-
 const KEYSET_ID = 'wakatime-keyset';
 const KEY_ID = 'wakatime-key';
 
@@ -61,17 +59,17 @@ let Statusbar = {
 
         Observer.prototype = {
             observe: function(subject, topic, data) {
-                Log.info('s: ' + subject + ' t: ' + topic + ' d: ' + data);
+                Log.info('Statusbar - s: ' + subject + ' t: ' + topic + ' d: ' + data);
             },
             register: function() {
                 var observerService = Cc['@mozilla.org/observer-service;1'].getService(Ci.nsIObserverService);
-                observerService.addObserver(this, '*', false); // NOTE: just for debugging, very verbose
-                //observerService.addObserver(this, 'wt-event', false);
+                //observerService.addObserver(this, '*', false); // NOTE: just for debugging, very verbose
+                observerService.addObserver(this, 'wt-event', false);
             },
             unregister: function() {
                 var observerService = Cc['@mozilla.org/observer-service;1'].getService(Ci.nsIObserverService);
-                observerService.removeObserver(this, '*');
-                //observerService.removeObserver(this, 'wt-event');
+                //observerService.removeObserver(this, '*');
+                observerService.removeObserver(this, 'wt-event');
             }
         };
 
@@ -90,15 +88,31 @@ let Statusbar = {
 };
 
 let Headup = {
-    show: function(name, timeout) {
+    init: function() {
+    },
+    observer: {
+        observe: function(subject, topic, data) {
+            Log.info('Headup - s: ' + subject + ' t: ' + topic + ' d: ' + data);
+        }
+    },
+    show: function() {
         // NOTE: this functions blocks until dialog is closed (modal)
         //Ui.win().openDialog('chrome://wakatime/content/' + name + '.xul', '', 'chrome,centerscreen', timeout);
-        Ui.win().openDialog('chrome://wakatime/content/' + name + '.xul', '', 'dialog,centerscreen', timeout);
+        //Ui.win().openDialog('chrome://wakatime/content/' + name + '.xul', '', 'dialog,centerscreen', timeout);
+        //let AlertService = Cc['@mozilla.org/alerts-service;1'].getService(Ci.nsIAlertsService);
+        //AlertService.showAlertNotification('chrome://wakatime/skin/logo.png', 'Wakatime', 'This is a message from Wakatime', true, '', Headup.observer, '');
+        try {
+            Cc['@mozilla.org/alerts-service;1'].getService(Ci.nsIAlertsService).showAlertNotification(null, 'Wakatime', 'This is a message from Wakatime', false, '', Headup.observer);
+        } catch(e) {
+            // prevents runtime error on platforms that don't implement nsIAlertsService
+            Log.info(e);
+        }
     }
 };
 
 let Shortcut = {
     load: function(win) {
+        Log.info('Shortcut....');
         if (!win) return;
 
         let doc = win.document;
@@ -112,12 +126,24 @@ let Shortcut = {
         key.setAttribute('modifiers', Prefs.getPref('shortcut_modifiers'));
         key.setAttribute('oncommand', 'void(0);');
         key.addEventListener('command', function() {
-            // TODO: implement this
-            Log.info('Shortcut called');
-            Headup.show('project', 1000);
+            //Headup.show('project', 1000);
+            Headup.show();
+            Log.info('Shortcut done.');
         }, true);
 
-        $(doc, Ui.app.baseKeyset).parentNode.appendChild(keyset).appendChild(key)
+        let node = $(doc, Ui.app.baseKeyset);
+
+        // http://code.metager.de/source/xref/mozilla/thunderbird/suite/mailnews/compose/messengercompose.xul
+        if(!node) {
+            node  = $(doc, 'tasksKeys');
+        }
+
+        if(node && node.parentNode) {
+            Log.info('Shortcut append....');
+            node.parentNode.appendChild(keyset).appendChild(key);
+        } else {
+            Log.info('Shortcut fail!');
+        }
     }
 };
 
@@ -146,15 +172,22 @@ let Ui = {
         //Css.init();
         Statusbar.init();
 
-        // load into windows
+        Services.ww.registerNotification(this.windowWatcher);
+
+        // add features to existing windows
         this.eachWindow(function(win) {
-            Shortcut.load(win);
-            Statusbar.load(win);
+            Ui.load(win);
         });
     },
     destroy: function() {
         Statusbar.destroy();
         //Css.destroy();
+        Services.ww.unregisterNotification(this.windowWatcher);
+    },
+    load: function(win) {
+        // load into windows
+        Shortcut.load(win);
+        Statusbar.load(win);
     },
     eachWindow: function (callback) {
         let enumerator = Services.wm.getEnumerator(this.app.winType);
@@ -163,24 +196,32 @@ let Ui = {
             if (win.document.readyState === 'complete') {
                 callback(win);
             } else {
-                runOnLoad(win, callback);
+                Ui.runOnLoad(win, callback);
             }
         }
     },
-    runOnLoad: function (window, callback) {
-        window.addEventListener('load', function __listener() {
-            window.removeEventListener('load', __listener, false);
-            callback(window);
+    runOnLoad: function (win, callback) {
+        win.addEventListener('load', function __listener() {
+            win.removeEventListener('load', __listener, false);
+
+            let winType = win.document.documentElement.getAttribute("windowtype");
+
+            if(winType === Ui.app.winType || winType === 'msgcompose') {
+                callback(win);
+            } else {
+                Log.info('Win Type: ' + winType); // TODO: remove before release
+            }
         }, false);
     },
-    windowWatcher: function(subject, topic, callback) {
-        if (topic === 'domwindowopened') {
-            //this.runOnLoad(subject, this.loadIntoWindow);
-            callback(subject);
+    windowWatcher: function(subject, topic) {
+        if(topic === 'domwindowopened') {
+            Ui.runOnLoad(subject, Ui.load);
+        } else {
+            Log.info('Watcher - t: ' + topic);
         }
     },
     win: function() {
-        var wm = Cc[APPSHELL_MEDIATOR_CONTRACTID].getService(Ci.nsIWindowMediator);
+        var wm = Cc['@mozilla.org/appshell/window-mediator;1'].getService(Ci.nsIWindowMediator);
         return wm.getMostRecentWindow(null);
     },
     setTimeout: function(callback, timeout) {

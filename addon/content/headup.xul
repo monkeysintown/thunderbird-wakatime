@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<panel id="wt-headup" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+    <hbox align="start">
+        <image src="warning.png"/>
+        <vbox>
+            <description value="You have 6 new messages."/>
+            <hbox>
+                <button label="Read Mail"/>
+                <button label="New Message"/>
+            </hbox>
+        </vbox>
+    </hbox>
+</panel>
