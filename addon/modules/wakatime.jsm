@@ -80,7 +80,7 @@ let WakaTime = {
         },
         onWindowTitleChange: function (w, title) {
             var project = Prefs.getPref('project');
-            project = project ? project : 'thunderbird-test';
+            project = project ? project : 'Email';
             WakaTime.sendHeartbeat(title + '.eml', Date.now(), project, 'Email', true, 4);
             Log.info('window: ' + w + ' - title: ' + title);
         }
