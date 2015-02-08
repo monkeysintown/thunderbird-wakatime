@@ -67,7 +67,7 @@ let Prefs = {
             Prefs.setPref('shortcut_key', 'w');
         }
         if(!Prefs.hasPref('shortcut_modifiers')) {
-            Prefs.setPref('shortcut_modifiers', 'shift,alt');
+            Prefs.setPref('shortcut_modifiers', 'alt');
         }
     },
     hasPref: function(key) {
