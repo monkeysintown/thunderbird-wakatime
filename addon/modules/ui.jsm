@@ -112,7 +112,6 @@ let Headup = {
 
 let Shortcut = {
     load: function(win) {
-        Log.info('Shortcut....');
         if (!win) return;
 
         let doc = win.document;
@@ -126,23 +125,20 @@ let Shortcut = {
         key.setAttribute('modifiers', Prefs.getPref('shortcut_modifiers'));
         key.setAttribute('oncommand', 'void(0);');
         key.addEventListener('command', function() {
-            //Headup.show('project', 1000);
             Headup.show();
-            Log.info('Shortcut done.');
         }, true);
 
+        // NOTE: this is the best way to find the window elements
+        // http://code.metager.de/source/xref/mozilla/thunderbird/suite/mailnews/compose/messengercompose.xul
         let node = $(doc, Ui.app.baseKeyset);
 
-        // http://code.metager.de/source/xref/mozilla/thunderbird/suite/mailnews/compose/messengercompose.xul
+        // msgcompose window
         if(!node) {
             node  = $(doc, 'tasksKeys');
         }
 
         if(node && node.parentNode) {
-            Log.info('Shortcut append....');
             node.parentNode.appendChild(keyset).appendChild(key);
-        } else {
-            Log.info('Shortcut fail!');
         }
     }
 };
