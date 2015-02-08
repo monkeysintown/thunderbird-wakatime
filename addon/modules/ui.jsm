@@ -75,8 +75,14 @@ let Statusbar = {
 
         this.observer = new Observer();
     },
-    destroy: function() {
-        // TODO: anything to be done here?
+    destroy: function(win) {
+        if (!win) return;
+
+        let doc = win.document;
+
+        var statusbar = doc.getElementById('status-bar');
+        var s = doc.getElementById('wt-statusbar');
+        statusbar.removeChild(s);
     },
     load: function(win) {
         if (!win) return;
@@ -195,7 +201,9 @@ let Ui = {
         });
     },
     destroy: function() {
-        Statusbar.destroy();
+        this.eachWindow(function(win) {
+            Statusbar.destroy(win);
+        });
         //Css.destroy();
         Services.ww.unregisterNotification(this.windowWatcher);
     },
