@@ -59,7 +59,7 @@ function escape() {
 }
 
 function select() {
-    // TODO: set the preference with the current project
+    Prefs.setPref('project', projects[index]);
     escape();
 }
 
