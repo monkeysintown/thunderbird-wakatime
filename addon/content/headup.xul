@@ -1,12 +1,48 @@
 <?xml version="1.0"?>
-<panel id="wt-headup" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<panel id="wt-headup" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="onLoad();" onbeforeunload="onUnload()">
+    <!--
+    <style>
+        panel {
+            background-color: #ffffff;
+        }
+    </style>
+    -->
+    <script type="application/javascript" src="chrome://wakatime/content/headup.js"/>
+
+    <commandset id="wt-commandset">
+        <command id="wtCmd:next" oncommand="next();" />
+        <command id="wtCmd:previous" oncommand="previous();" />
+        <command id="wtCmd:start" oncommand="start();" />
+        <command id="wtCmd:end" oncommand="end();" />
+        <command id="wtCmd:edit" oncommand="edit();" />
+        <command id="wtCmd:select" oncommand="select();" />
+        <command id="wtCmd:escape" oncommand="close();" />
+    </commandset>
+
+    <keyset id="wt-keyset">
+        <key id="next-right-key" keycode="VK_RIGHT" command="wtCmd:next" />
+        <key id="escape-key" keycode="VK_ESCAPE" command="wtCmd:escape" />
+        <!--
+        <key id="next-tab-key" keycode="VK_TAB" command="wtCmd:next" />
+        <key id="next-space-key" keycode="VK_SPACE" command="wtCmd:next" />
+        <key id="next-down-key" keycode="VK_DOWN" command="wtCmd:next" />
+        <key id="previous-tab-key" keycode="VK_TAB" command="wtCmd:previous" />
+        <key id="previous-left-key" keycode="VK_LEFT" command="wtCmd:previous" />
+        <key id="previous-up-key" keycode="VK_UP" command="wtCmd:previous" />
+        <key id="start-key" keycode="VK_HOME" command="wtCmd:start" />
+        <key id="end-key" keycode="VK_END" command="wtCmd:end" />
+        <key id="enter-key" keycode="VK_ENTER" command="wtCmd:select" />
+        <key id="edit-key" keycode="VK_F2" command="wtCmd:edit" />
+        -->
+    </keyset>
+
     <hbox align="start">
-        <image src="warning.png"/>
+        <image src="chrome://wakatime/skin/icon.png" />
         <vbox>
-            <description value="You have 6 new messages."/>
+            <description value="Choose your Wakatime project:" />
             <hbox>
-                <button label="Read Mail"/>
-                <button label="New Message"/>
+                <label id="wt-project">---</label>
+                <button label="Close" onclick="close();" />
             </hbox>
         </vbox>
     </hbox>

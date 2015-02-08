@@ -87,6 +87,21 @@ let Statusbar = {
     }
 };
 
+let Notification = {
+    show: function(image, title, message) {
+        // NOTE: this functions blocks until dialog is closed (modal)
+        //Ui.win().openDialog('chrome://wakatime/content/' + name + '.xul', '', 'chrome,centerscreen', timeout);
+
+        let win = Cc['@mozilla.org/embedcomp/window-watcher;1'].getService(Ci.nsIWindowWatcher).openWindow(
+            null,
+            //'chrome://global/content/alerts/alert.xul',
+            'chrome://wakatime/content/headup.xul',
+            '_blank', 'chrome,centerscreen,titlebar=no,popup=yes',
+            null);
+        win.arguments = [image, title, message, false, ''];
+    }
+}
+
 let Headup = {
     init: function() {
     },
@@ -96,13 +111,10 @@ let Headup = {
         }
     },
     show: function() {
-        // NOTE: this functions blocks until dialog is closed (modal)
-        //Ui.win().openDialog('chrome://wakatime/content/' + name + '.xul', '', 'chrome,centerscreen', timeout);
-        //Ui.win().openDialog('chrome://wakatime/content/' + name + '.xul', '', 'dialog,centerscreen', timeout);
-        //let AlertService = Cc['@mozilla.org/alerts-service;1'].getService(Ci.nsIAlertsService);
-        //AlertService.showAlertNotification('chrome://wakatime/skin/logo.png', 'Wakatime', 'This is a message from Wakatime', true, '', Headup.observer, '');
         try {
-            Cc['@mozilla.org/alerts-service;1'].getService(Ci.nsIAlertsService).showAlertNotification(null, 'Wakatime', 'This is a message from Wakatime', false, '', Headup.observer);
+            // more infos here: https://developer.mozilla.org/en-US/Add-ons/Code_snippets/Alerts_and_Notifications
+            //Cc['@mozilla.org/alerts-service;1'].getService(Ci.nsIAlertsService).showAlertNotification('chrome://wakatime/skin/logo.png', 'Wakatime', 'This is a message from Wakatime', false, '', Headup.observer);
+            Notification.show('chrome://wakatime/skin/icon.png', 'Wakatime', 'This is a another message from Wakatime');
         } catch(e) {
             // prevents runtime error on platforms that don't implement nsIAlertsService
             Log.info(e);
