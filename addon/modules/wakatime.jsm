@@ -61,8 +61,6 @@ let WakaTime = {
     getSummary: function(callback) {
         var lastUpdated = Prefs.getPref('summary_timestamp');
 
-        Log.info('Summary last: ' + lastUpdated);
-
         if(lastUpdated+(ONE_DAY/1000) < Date.now()/1000) {
             var today = new Date();
             var yesterday = new Date(today.getTime()-ONE_DAY);
@@ -92,7 +90,6 @@ let WakaTime = {
         } else {
             // return cached values
             if(callback) {
-                Log.info('Return cached summary values. ' + lastUpdated);
                 callback(JSON.parse(Prefs.getPref('summary')));
             }
         }
