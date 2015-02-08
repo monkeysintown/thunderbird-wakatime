@@ -1,4 +1,4 @@
-/* global Components, Services, Prefs */
+/* global Components, Services, Prefs, Log */
 
 'use strict';
 
@@ -32,10 +32,8 @@ function end() {
 }
 
 function next() {
-    Log.info('next');
-    if(index<projects.length) {
-        index++;
-    } else {
+    index++;
+    if(index>=projects.length) {
         start();
     }
 
@@ -43,10 +41,8 @@ function next() {
 }
 
 function previous() {
-    Log.info('prev');
-    if(index>=0) {
-        index--;
-    } else {
+    index--;
+    if(index<0) {
         end();
     }
 
@@ -54,14 +50,17 @@ function previous() {
 }
 
 function edit() {
-    Log.info('edit');
+    console.log('edit');
     // TODO: show input field
 }
 
+function escape() {
+    window.close();
+}
+
 function select() {
-    Log.info('select');
     // TODO: set the preference with the current project
-    document.close();
+    escape();
 }
 
 function display() {

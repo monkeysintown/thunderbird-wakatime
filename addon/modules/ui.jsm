@@ -92,13 +92,12 @@ let Notification = {
         // NOTE: this functions blocks until dialog is closed (modal)
         //Ui.win().openDialog('chrome://wakatime/content/' + name + '.xul', '', 'chrome,centerscreen', timeout);
 
-        let win = Cc['@mozilla.org/embedcomp/window-watcher;1'].getService(Ci.nsIWindowWatcher).openWindow(
-            null,
-            //'chrome://global/content/alerts/alert.xul',
-            'chrome://wakatime/content/headup.xul',
-            '_blank', 'chrome,centerscreen,titlebar=no,popup=yes',
-            null);
-        win.arguments = [image, title, message, false, ''];
+        // more infos here: https://developer.mozilla.org/en-US/Add-ons/Code_snippets/Alerts_and_Notifications
+        Cc['@mozilla.org/alerts-service;1'].getService(Ci.nsIAlertsService).showAlertNotification(image, title, message, false, '', Headup.observer);
+
+        /**
+         */
+        //Ui.win().openDialog('chrome://wakatime/content/headup.xul', '', 'centerscreen,titlebar=no');
     }
 }
 
@@ -112,9 +111,17 @@ let Headup = {
     },
     show: function() {
         try {
-            // more infos here: https://developer.mozilla.org/en-US/Add-ons/Code_snippets/Alerts_and_Notifications
-            //Cc['@mozilla.org/alerts-service;1'].getService(Ci.nsIAlertsService).showAlertNotification('chrome://wakatime/skin/logo.png', 'Wakatime', 'This is a message from Wakatime', false, '', Headup.observer);
-            Notification.show('chrome://wakatime/skin/icon.png', 'Wakatime', 'This is a another message from Wakatime');
+            // NOTE: openDialog is more reliable in multi-screen environments (centerscreen)
+            /**
+            Cc['@mozilla.org/embedcomp/window-watcher;1'].getService(Ci.nsIWindowWatcher).openWindow(
+                null,
+                //'chrome://global/content/alerts/alert.xul',
+                'chrome://wakatime/content/headup.xul',
+                '_blank',
+                'chrome=1, centerscreen, titlebar=0, popup=0',
+                null);
+             */
+            Ui.win().openDialog('chrome://wakatime/content/headup.xul', '', 'centerscreen,titlebar=0');
         } catch(e) {
             // prevents runtime error on platforms that don't implement nsIAlertsService
             Log.info(e);

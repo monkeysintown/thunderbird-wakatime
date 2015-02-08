@@ -1,12 +1,7 @@
 <?xml version="1.0"?>
-<panel id="wt-headup" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="onLoad();" onbeforeunload="onUnload()">
-    <!--
-    <style>
-        panel {
-            background-color: #ffffff;
-        }
-    </style>
-    -->
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="headup.css" type="text/css"?>
+<window id="wt-headup" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="onLoad();" width="300" hidechrome="true">
     <script type="application/javascript" src="chrome://wakatime/content/headup.js"/>
 
     <commandset id="wt-commandset">
@@ -16,34 +11,30 @@
         <command id="wtCmd:end" oncommand="end();" />
         <command id="wtCmd:edit" oncommand="edit();" />
         <command id="wtCmd:select" oncommand="select();" />
-        <command id="wtCmd:escape" oncommand="close();" />
+        <command id="wtCmd:escape" oncommand="escape();" />
     </commandset>
 
-    <keyset id="wt-keyset">
-        <key id="next-right-key" keycode="VK_RIGHT" command="wtCmd:next" />
-        <key id="escape-key" keycode="VK_ESCAPE" command="wtCmd:escape" />
+    <keyset id="mainKeyset">
+        <key keycode="VK_UP" command="wtCmd:previous" />
+        <key keycode="VK_DOWN" command="wtCmd:next" />
+        <key keycode="VK_PAGE_UP" command="wtCmd:previous" />
+        <key keycode="VK_PAGE_DOWN" command="wtCmd:next" />
+        <key keycode="VK_ESCAPE" command="wtCmd:escape" />
+        <key keycode="VK_SPACE" modifiers="shift" command="wtCmd:next" />
+        <key keycode="VK_ENTER" command="wtCmd:next" />
+        <key keycode="VK_RETURN" command="wtCmd:select" />
         <!--
-        <key id="next-tab-key" keycode="VK_TAB" command="wtCmd:next" />
-        <key id="next-space-key" keycode="VK_SPACE" command="wtCmd:next" />
-        <key id="next-down-key" keycode="VK_DOWN" command="wtCmd:next" />
-        <key id="previous-tab-key" keycode="VK_TAB" command="wtCmd:previous" />
-        <key id="previous-left-key" keycode="VK_LEFT" command="wtCmd:previous" />
-        <key id="previous-up-key" keycode="VK_UP" command="wtCmd:previous" />
-        <key id="start-key" keycode="VK_HOME" command="wtCmd:start" />
-        <key id="end-key" keycode="VK_END" command="wtCmd:end" />
-        <key id="enter-key" keycode="VK_ENTER" command="wtCmd:select" />
-        <key id="edit-key" keycode="VK_F2" command="wtCmd:edit" />
+        <key keycode="VK_F2" command="wtCmd:edit" />
         -->
     </keyset>
 
-    <hbox align="start">
-        <image src="chrome://wakatime/skin/icon.png" />
-        <vbox>
-            <description value="Choose your Wakatime project:" />
-            <hbox>
-                <label id="wt-project">---</label>
-                <button label="Close" onclick="close();" />
-            </hbox>
-        </vbox>
-    </hbox>
-</panel>
+    <!--
+    NOTE: some useful tips: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/titlebar
+    -->
+    <titlebar id="wt-headup-titlebar" oncommand="close();" >
+        <hbox>
+            <image id="wt-logo" src="chrome://wakatime/skin/icon32.png" width="32" height="32" />
+            <label id="wt-project">---</label>
+        </hbox>
+    </titlebar>
+</window>

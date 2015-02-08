@@ -8,7 +8,7 @@
         </statusbarpanel>
         -->
         <hbox align="start">
-            <image src="chrome://wakatime/skin/icon.png" />
+            <image src="chrome://wakatime/skin/icon16.png" />
             <statusbarpanel id="wt-statusbar-panel-label" label="Wakatime!" tooltiptext="Here comes Wakatime..."/>
         </hbox>
     </statusbar>
