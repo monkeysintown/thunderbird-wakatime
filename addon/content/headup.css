@@ -10,8 +10,6 @@
     background: rgba(239, 239, 239, 0.9);
     border-radius: 7px 7px 7px 7px !important;
     -moz-border-radius: 7px 7px 7px 7px !important;
-    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
-    -moz-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
     margin: 0;
     padding: 7px;
 }
@@ -19,6 +17,13 @@
 #wt-logo {
     margin-left: 7px;
     margin-right: 7px;
+}
+
+#wt-time {
+    width: 80px;
+    text-align: center;
+    vertical-align: middle;
+    height: 100%;
 }
 
 #wt-project {

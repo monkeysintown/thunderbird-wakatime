@@ -34,6 +34,7 @@
     <titlebar id="wt-headup-titlebar" oncommand="close();" >
         <hbox>
             <image id="wt-logo" src="chrome://wakatime/skin/icon32.png" width="32" height="32" />
+            <label id="wt-time">00:00</label>
             <label id="wt-project">---</label>
         </hbox>
     </titlebar>

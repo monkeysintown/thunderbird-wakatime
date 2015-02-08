@@ -1,6 +1,6 @@
 /* global Components, Services, PREF_STRING, PREF_INT, PREF_BOOL, PREF_INVALID */
 
-EXPORTED_SYMBOLS = ['Log', 'Prefs', 'File', 'Exec', 'Http', '$'];
+EXPORTED_SYMBOLS = ['Log', 'Prefs', 'File', 'Exec', 'Http', 'Format', '$'];
 
 const {interfaces: Ci, utils: Cu, classes: Cc} = Components;
 
@@ -68,6 +68,14 @@ let Prefs = {
         }
         if(!Prefs.hasPref('shortcut_modifiers')) {
             Prefs.setPref('shortcut_modifiers', 'alt');
+        }
+
+        // hidden prefs
+        if(!Prefs.hasPref('summary')) {
+            Prefs.prefs.setCharPref('summary', '');
+        }
+        if(!Prefs.hasPref('summary_timestamp')) {
+            Prefs.prefs.setIntPref('summary_timestamp', 0);
         }
     },
     hasPref: function(key) {
@@ -151,6 +159,31 @@ let Http = {
             request.onerror = options.onerror;
         }
         request.send(options.data);
+    }
+};
+
+let Format = {
+    date: function(d) {
+        var result;
+
+        var year = d.getFullYear();
+        var month = d.getMonth()+1;
+        var day = d.getDate();
+
+
+        if(month<10) {
+            result = '0';
+        }
+
+        result += month + '/';
+
+        if(day<10) {
+            result += '0';
+        }
+
+        result += day + '/' + year;
+
+        return result;
     }
 };
 

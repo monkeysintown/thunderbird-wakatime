@@ -11,12 +11,26 @@ Cu.import('resource://gre/modules/Services.jsm');
 Cu.import('resource://wakatime/modules/util.jsm');
 Cu.import('resource://wakatime/modules/wakatime.jsm');
 
-let projects = ['one', 'two', 'three', 'four', 'five'];
+let projects = [];
 let index = 0;
 
 function onLoad() {
     // TODO: maybe load the projects
-    display();
+    WakaTime.getSummary(function(data) {
+        var tmp = {};
+        for(var i=0; i<data.data.length; i++) {
+            for(var j=0; j<data.data[i].projects.length; j++) {
+                var name = data.data[i].projects[j].name;
+                // only once
+                if(!tmp[name]) {
+                    tmp[name] = true;
+                    projects.push(data.data[i].projects[j]);
+                }
+            }
+        }
+        tmp = undefined;
+        display();
+    });
 }
 
 function onUnload() {
@@ -59,10 +73,11 @@ function escape() {
 }
 
 function select() {
-    Prefs.setPref('project', projects[index]);
+    Prefs.setPref('project', projects[index].name);
     escape();
 }
 
 function display() {
-    document.getElementById('wt-project').innerHTML = projects[index];
+    document.getElementById('wt-time').innerHTML = projects[index].digital;
+    document.getElementById('wt-project').innerHTML = projects[index].name;
 }
