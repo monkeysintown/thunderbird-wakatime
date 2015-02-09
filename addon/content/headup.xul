@@ -12,6 +12,7 @@
         <command id="wtCmd:edit" oncommand="edit();" />
         <command id="wtCmd:select" oncommand="select();" />
         <command id="wtCmd:escape" oncommand="escape();" />
+        <command id="wtCmd:refresh" oncommand="refresh();" />
     </commandset>
 
     <keyset id="mainKeyset">
@@ -23,6 +24,7 @@
         <key keycode="VK_SPACE" modifiers="shift" command="wtCmd:next" />
         <key keycode="VK_ENTER" command="wtCmd:next" />
         <key keycode="VK_RETURN" command="wtCmd:select" />
+        <key key="r" modifiers="alt" command="wtCmd:refresh" />
         <!--
         <key keycode="VK_F2" command="wtCmd:edit" />
         -->

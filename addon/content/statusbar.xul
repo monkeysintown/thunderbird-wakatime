@@ -2,14 +2,9 @@
 <?xml-stylesheet href="chrome://wakatime/skin/overlay.css" type="text/css"?>
 <overlay id="wt" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
     <statusbar id="status-bar">
-        <!--
-        <statusbarpanel id="wt-statusbar-panel-icon">
-            <icon id="wt-statusbar-icon" />
-        </statusbarpanel>
-        -->
         <hbox id="wt-statusbar" align="start">
             <image src="chrome://wakatime/skin/icon16.png" />
-            <statusbarpanel id="wt-statusbar-panel-label" label="Wakatime!" tooltiptext="Here comes Wakatime..."/>
+            <statusbarpanel id="wt-statusbar-panel-label" label="Wakatime..." tooltiptext="Here comes Wakatime..."/>
         </hbox>
     </statusbar>
 </overlay>

@@ -23,7 +23,6 @@ let Css = {
             let styleSheetURI = Services.io.newURI(Css.stylesheets[i], null, null);
 
             styleSheetService.loadAndRegisterSheet(styleSheetURI, styleSheetService.AUTHOR_SHEET);
-            Log.info(styleSheetURI);
         }
     },
     destroy: function() {
@@ -53,35 +52,30 @@ let Toolbar = {
 
 let Statusbar = {
     init: function() {
-        function Observer() {
-            this.register();
-        }
-
-        Observer.prototype = {
-            observe: function(subject, topic, data) {
-                Log.info('Statusbar - s: ' + subject + ' t: ' + topic + ' d: ' + data);
-            },
-            register: function() {
-                var observerService = Cc['@mozilla.org/observer-service;1'].getService(Ci.nsIObserverService);
-                //observerService.addObserver(this, '*', false); // NOTE: just for debugging, very verbose
-                observerService.addObserver(this, 'wt-event', false);
-            },
-            unregister: function() {
-                var observerService = Cc['@mozilla.org/observer-service;1'].getService(Ci.nsIObserverService);
-                //observerService.removeObserver(this, '*');
-                observerService.removeObserver(this, 'wt-event');
+        Statusbar.observer.register();
+    },
+    observer: {
+        register: function() {
+            Prefs.register(Statusbar.observer);
+        },
+        unregister: function() {
+            Prefs.unregister(Statusbar.observer);
+        },
+        observe: function(subject, topic, data) {
+            switch (data) {
+                case 'project':
+                    Statusbar.setLabel(Prefs.getPref('project'));
+                    break;
             }
-        };
-
-        this.observer = new Observer();
+        }
     },
     destroy: function(win) {
         if (!win) return;
 
         let doc = win.document;
 
-        var statusbar = doc.getElementById('status-bar');
-        var s = doc.getElementById('wt-statusbar');
+        let statusbar = $(doc, 'status-bar');
+        let s = $(doc, 'wt-statusbar');
         statusbar.removeChild(s);
     },
     load: function(win) {
@@ -89,31 +83,33 @@ let Statusbar = {
 
         let doc = win.document;
 
-        doc.loadOverlay('chrome://wakatime/content/statusbar.xul', this.observer);
+        doc.loadOverlay('chrome://wakatime/content/statusbar.xul', null);
+    },
+    setLabel: function(text) {
+        Ui.eachWindow(function(win) {
+            if (!win) return;
+
+            let doc = win.document;
+
+            let panel = $(doc, 'wt-statusbar-panel-label');
+
+            panel.setAttribute('label', Prefs.getPref('project'));
+        });
     }
 };
 
 let Notification = {
-    show: function(image, title, message) {
-        // NOTE: this functions blocks until dialog is closed (modal)
-        //Ui.win().openDialog('chrome://wakatime/content/' + name + '.xul', '', 'chrome,centerscreen', timeout);
-
+    show: function(title, message, image) {
+        if(!image) {
+            image = 'chrome://wakatime/skin/logo.png';
+        }
         // more infos here: https://developer.mozilla.org/en-US/Add-ons/Code_snippets/Alerts_and_Notifications
-        Cc['@mozilla.org/alerts-service;1'].getService(Ci.nsIAlertsService).showAlertNotification(image, title, message, false, '', Headup.observer);
-
-        /**
-         */
-        //Ui.win().openDialog('chrome://wakatime/content/headup.xul', '', 'centerscreen,titlebar=no');
+        Cc['@mozilla.org/alerts-service;1'].getService(Ci.nsIAlertsService).showAlertNotification(image, title, message, false, '', null);
     }
-}
+};
 
 let Headup = {
     init: function() {
-    },
-    observer: {
-        observe: function(subject, topic, data) {
-            Log.info('Headup - s: ' + subject + ' t: ' + topic + ' d: ' + data);
-        }
     },
     show: function() {
         try {
@@ -231,16 +227,12 @@ let Ui = {
 
             if(winType === Ui.app.winType || winType === 'msgcompose') {
                 callback(win);
-            } else {
-                Log.info('Win Type: ' + winType); // TODO: remove before release
             }
         }, false);
     },
     windowWatcher: function(subject, topic) {
         if(topic === 'domwindowopened') {
             Ui.runOnLoad(subject, Ui.load);
-        } else {
-            Log.info('Watcher - t: ' + topic);
         }
     },
     win: function() {

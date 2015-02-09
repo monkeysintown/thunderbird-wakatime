@@ -70,12 +70,13 @@ let Prefs = {
             Prefs.setPref('shortcut_modifiers', 'alt');
         }
 
-        // hidden prefs
+        // hidden prefs; probably best to load them on every startup and only cache during session
+        Prefs.prefs.setCharPref('summary', '');
+        Prefs.prefs.setIntPref('summary_timestamp', 0);
+
         if(!Prefs.hasPref('summary')) {
-            Prefs.prefs.setCharPref('summary', '');
         }
         if(!Prefs.hasPref('summary_timestamp')) {
-            Prefs.prefs.setIntPref('summary_timestamp', 0);
         }
     },
     hasPref: function(key) {
@@ -132,6 +133,12 @@ let Prefs = {
         }
 
         return result;
+    },
+    register: function(observer) {
+        Prefs.prefs.addObserver('', observer, false);
+    },
+    unregister: function(observer) {
+        Prefs.prefs.removeObserver('', observer);
     }
 };
 

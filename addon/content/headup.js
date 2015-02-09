@@ -8,6 +8,7 @@ const {interfaces: Ci, utils: Cu, classes: Cc} = Components;
 Cu.import('resource://gre/modules/Services.jsm');
 
 // module imports
+Cu.import('resource://wakatime/modules/ui.jsm');
 Cu.import('resource://wakatime/modules/util.jsm');
 Cu.import('resource://wakatime/modules/wakatime.jsm');
 
@@ -15,22 +16,7 @@ let projects = [];
 let index = 0;
 
 function onLoad() {
-    // TODO: maybe load the projects
-    WakaTime.getSummary(function(data) {
-        var tmp = {};
-        for(var i=0; i<data.data.length; i++) {
-            for(var j=0; j<data.data[i].projects.length; j++) {
-                var name = data.data[i].projects[j].name;
-                // only once
-                if(!tmp[name]) {
-                    tmp[name] = true;
-                    projects.push(data.data[i].projects[j]);
-                }
-            }
-        }
-        tmp = undefined;
-        display();
-    });
+    refresh();
 }
 
 function onUnload() {
@@ -80,4 +66,23 @@ function select() {
 function display() {
     document.getElementById('wt-time').innerHTML = projects[index].digital;
     document.getElementById('wt-project').innerHTML = projects[index].name;
+}
+
+function refresh() {
+    WakaTime.getSummary(function(data) {
+        var tmp = {};
+        for(var i=0; i<data.data.length; i++) {
+            for(var j=0; j<data.data[i].projects.length; j++) {
+                var name = data.data[i].projects[j].name;
+                // only once
+                if(!tmp[name]) {
+                    tmp[name] = true;
+                    projects.push(data.data[i].projects[j]);
+                }
+            }
+        }
+        tmp = undefined;
+        display();
+        Notification.show('WakaTime', 'Project list up to date.');
+    });
 }
