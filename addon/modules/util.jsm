@@ -63,11 +63,17 @@ let Prefs = {
             });
         }
 
+        // shortcuts
         if(!Prefs.hasPref('shortcut_key')) {
-            Prefs.setPref('shortcut_key', 'w');
+            Prefs.prefs.setCharPref('shortcut_key', 'w');
         }
         if(!Prefs.hasPref('shortcut_modifiers')) {
-            Prefs.setPref('shortcut_modifiers', 'alt');
+            Prefs.prefs.setCharPref('shortcut_modifiers', 'alt');
+        }
+
+        // pause
+        if(!Prefs.hasPref('paused')) {
+            Prefs.prefs.setBoolPref('paused', false);
         }
 
         // hidden prefs; probably best to load them on every startup and only cache during session

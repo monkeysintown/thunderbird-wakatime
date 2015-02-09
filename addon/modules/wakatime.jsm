@@ -30,7 +30,7 @@ let WakaTime = {
         Services.wm.removeListener(this.windowListener);
     },
     sendHeartbeat: function(file, time, project, language, isWrite, lines) {
-        if(this.enoughTimePassed()) {
+        if(this.enoughTimePassed() && !Prefs.getPref('paused')) {
             Http.send(API_ACTIONS_URL, {
                 method: 'POST',
                 mimeType: 'application/json',

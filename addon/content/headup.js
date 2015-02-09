@@ -58,14 +58,36 @@ function escape() {
     window.close();
 }
 
+function pause() {
+    Prefs.setPref('paused', !Prefs.getPref('paused'));
+
+    if(Prefs.getPref('paused')) {
+        setLabels('', 'paused');
+    } else {
+        setLabels('', 'resumed');
+    }
+
+    Ui.setTimeout(function() {
+        escape();
+    }, 1500);
+}
+
 function select() {
     Prefs.setPref('project', projects[index].name);
     escape();
 }
 
 function display() {
-    document.getElementById('wt-time').innerHTML = projects[index].digital;
-    document.getElementById('wt-project').innerHTML = projects[index].name;
+    if(Prefs.getPref('paused')) {
+        setLabels('', 'paused');
+    } else {
+        setLabels(projects[index].digital, projects[index].name);
+    }
+}
+
+function setLabels(time, project) {
+    document.getElementById('wt-time').innerHTML = time;
+    document.getElementById('wt-project').innerHTML = project;
 }
 
 function refresh() {
@@ -83,6 +105,6 @@ function refresh() {
         }
         tmp = undefined;
         display();
-        Notification.show('WakaTime', 'Project list up to date.');
+        //Notification.show('WakaTime', 'Project list up to date.');
     });
 }

@@ -8,5 +8,7 @@
 <!ENTITY shortcutModifiers.description  "">
 <!ENTITY shortcutKey.label              "Shortcut key">
 <!ENTITY shortcutKey.description        "">
+<!ENTITY paused.label                   "Paused">
+<!ENTITY paused.description             "">
 <!ENTITY debug.label                    "Debug">
 <!ENTITY debug.description              "Enable debug mode">

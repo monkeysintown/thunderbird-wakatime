@@ -66,6 +66,13 @@ let Statusbar = {
                 case 'project':
                     Statusbar.setLabel(Prefs.getPref('project'));
                     break;
+                case 'paused':
+                    if(Prefs.getPref('paused')) {
+                        Statusbar.setLabel('Paused!');
+                    } else {
+                        Statusbar.setLabel(Prefs.getPref('project'));
+                    }
+                    break;
             }
         }
     },
